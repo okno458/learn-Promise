@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>宏队列和微队列</title>
+</head>
+<body>
+    <!--
+         在浏览器中异步任务的执行队列会被分为宏队列和微队列
+            宏队列：[宏任务1，宏任务2]
+            微队列：[微任务1，微任务2]
+            微队列中的微任务优先级比宏队列高
+            宏任务举例：事件的回调，Ajax请求的回调，定时器的回调
+            微任务举例：promise所指定的回调
+            规则：每次要执行宏队列的一个任务之前，先看微队列里是否有待执行的微任务
+                1.如果有，则先执行微任务
+                2.如果没有，按照宏队列里任务的顺序，依次执行
+    -->
+    <script>
+        //输出结果为：'主线程'，('成功1',1) ('成功2',2) ，'timeout'
+        //因为promise所指定的回调为微任务所以比宏任务的定时器要先输出
+        // setTimeout(()=>{
+        //     console.log('timeout')
+        // },0)
+        // Promise.resolve(1).then(
+        //     value => {console.log('成功1',value)}
+        // )
+        // Promise.resolve(2).then(
+        //     value => {console.log('成功2',value)}
+        // )
+        // console.log('主线程')
+        // console.log('************************************')
+        //面试题1：
+        // setTimeout(()=>{
+        //     console.log('timeout1')
+        // })
+        // setTimeout(()=>{
+        //     console.log('timeout2')
+        // })
+        // Promise.resolve(1).then(
+        //     value => {console.log('成功1',value)}
+        // )
+        // Promise.resolve(2).then(
+        //     value => {console.log('成功2',value)}
+        // )
+        //面试题2：
+        // console.log('************************************')
+        // setTimeout(()=>{
+        //     console.log('timeout1')
+        //     //宏任务在执行的同时可能产生一个新的微任务
+        //     //执行宏队列的宏任务前，需要看微队列中是否有微任务
+        //     Promise.resolve(5).then(
+        //         value => {console.log('成功5',value)}
+        //     )
+        // })
+        // setTimeout(()=>{
+        //     console.log('timeout2')
+        // })
+        // Promise.resolve(3).then(
+        //     value => {console.log('成功3',value)}
+        // )
+        // Promise.resolve(4).then(
+        //     value => {console.log('成功4',value)}
+        // )
+        //面试题3
+        console.log('************************************')
+        setTimeout(()=>{
+            console.log(0)
+        },0)
+        new Promise((resolve, reject) => {
+            console.log(1)
+            resolve()
+        }).then(()=>{
+            console.log(2)
+            new Promise((resolve, reject) => {
+                console.log(3)
+                resolve()
+            }).then(()=>{
+                console.log(4)
+            }).then(()=>{
+                console.log(5)
+            })
+        }).then(()=>{
+            console.log(6)
+        })
+        new Promise((resolve, reject) => {
+            console.log(7)
+            resolve()
+        }).then(()=>{
+            console.log(8)
+        })
+        //解析：
+        /*
+        *   1. 主线程开始执行代码，因为定时器为宏任务，所以推到宏队列中等待
+        *   2. promise中传递的executor函数是一个同步函数，所以控制台最先输出1
+        *   3. 指定该promise实例状态为成功后，调用then方法
+        *      因为then方法是一个异步的回调，又因为promise指定的回调属于微任务，所以将其推向微队列（2）（此时微队列中的任务：2）
+        *      主线程继续向下执行，不去关注已经推向微队列中的内容
+        *   4.主线程继续向下执行代码，控制台输出7
+        *   5.指定状态为成功后,将该then方法(8)推向微队列，到此主线程上的代码已执行完毕 （此时微队列中的任务：2，8）
+        *   6.主线程执行完毕后，开始执行微队列中的任务，所以控制台输出2
+        *   7.此处再次创建了一个promise实例，因executor函数为同步任务，所以控制台输出3，
+        *      又因为指定方法状态为成功，推向微队列(4)（此时微队列中的任务：2，8，4）
+        *      (此处4没有执行，则不知道返回的状态，所以5并没有被推入微队列，而是挂载到4返回的新promise实例的自身)
+        *   8.因上方then方法(2)推入微队列但还未执行完毕时，所以不知道其状态和返回值，所以该then方法(6)并没有进入队列（此时微队列中的任务：2，8，4）
+        *     它挂载到了上一个then方法(2)返回的新promise实例的自身上
+        *   9.当上方then方法(2)执行完毕后，返回了一个undefined（因为then方法成功的回调函数没有传递参数）
+        *     因为undefined是非promise值，所以状态为成功
+              将该then方法（6）推入微队列（此时微队列中的任务：8，4，6）
+        *   10.当（2）执行完毕后，从微队列清除，由于（8）所在的then方法排在最前，所以控制台输出8，该回调也从微队列中清除 (此时微队列中的任务：4，6)
+        *   11.再次执行微队列中的任务 此时微队列中（4）排在首位，所以控制台输出4 (此时微队列中的任务：6)
+        *   12.4所在的回调已经执行，返回值为undefined，所以该promise返回的状态为成功，将（5）推入微队列 (此时微队列中的任务：6，5)
+        *   13.（4）执行完毕后，（6）排在微队列任务的首位，控制台输出6 (此时微队列中的任务：5)
+        *   14.（6）执行完毕后，（5）排在微队列任务的首位，控制台输出5 (此时微队列中已经没有任务)
+        *   15.主线程和微队列中任务全部执行完毕，执行宏任务，控制台输出0
+        *
+        *   最后答案：1，7，2，3，8，4，6，5，0
+        * */
+    </script>
+</body>
+</html>

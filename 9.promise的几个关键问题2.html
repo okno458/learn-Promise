@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise的几个关键问题2</title>
+</head>
+<body>
+<script>
+    /*
+    * 改变promise实例状态和指定回调函数谁前谁后
+    *    1.都有可能，正常情况下是先指定回调再改变状态，但也可以先改状态再指定回调
+    *    2.如何先改状态再指定回调
+    *       延迟一会调用then
+    *    3.promise什么时候才能得到数据
+    *        如果先指定回调，当状态发生改变时，回调函数就会调用，得到数据
+    *        如果先改变状态，当指定回调时，回调函数就会调用，得到数据
+    * */
+
+
+    //先指定回调，再改变状态
+    // const p = new Promise((resolve, reject) => {
+    //     setTimeout(()=>{
+    //         resolve(100)
+    //     },1000)
+    // })
+    // p.then(res=>{
+    //     console.log('成功了',res)
+    // },err => {
+    //     console.log('失败了',err)
+    // })
+
+
+    //先改变状态，再指定回调（延时调用then）
+    const p = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve(100)
+        },1000)
+    })
+    setTimeout(()=>{
+        p.then(res=>{
+            console.log('成功了',res)
+        },err => {
+            console.log('失败了',err)
+        })
+    },3000)
+
+</script>
+</body>
+</html>

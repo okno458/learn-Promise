@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>async与await</title>
+</head>
+<body>
+    <!--
+        1.async修饰的函数
+           函数的返回值为promise实例对象
+           Promise实例的结果由async函数指定的返回值决定
+        2.await表达式
+           await右侧的表达式一般是一个promise实例对象，但也可以是其他的值
+           如果表达式是promise实例对象，await的返回值是promise成功的值
+           如果表达式是其他的值，则直接将该值作为await表达式的返回值
+        注意：
+           await必须写在async函数中，但async函数中可以没有await
+           如果await表达式的promise实例对象失败了 就会抛出异常，需要try catch语句来捕获处理
+    -->
+<script>
+    const p = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve('a')
+        },1000)
+    });
+    const p1 = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve('b')
+        },2000)
+    });
+    const p2 = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve('c')
+        },4000)
+    });
+    (async ()=>{
+        try {
+            const res = await p
+            console.log(res)
+            const res1 = await p1
+            console.log(res1)
+            const res2 = await p2
+            console.log(res2)
+        }catch (e) {
+            console.log('失败了', e)
+        }
+    })()
+
+    //一个被async修饰的函数会返回一个Promise实例
+    async function demo() {
+       return Promise.reject(-100)
+    }
+    const res = demo()
+    res.then(
+        value => {console.log('ok',value)},
+        reason => {console.log('err',reason)}
+    )
+
+</script>
+</body>
+</html>

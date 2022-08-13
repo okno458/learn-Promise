@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>await的原理</title>
+</head>
+<body>
+    <!--
+        若使用async和await的写法：
+            1.表面上不会出现任何的回调函数
+            2.但是底层把程序员写的代码进行了加工，把回调函数“还原”过来
+            3.最终运行的代码依然有回调
+    -->
+    <script>
+        const p = new Promise((resolve, reject) => {
+            setTimeout(()=>{
+                resolve('----')
+            },1000)
+        })
+        //await的原理
+        //await并没有等待promise返回的结果，而是瞬间输出了1
+        async function demo() {
+            //程序员写的代码
+            const res = await p
+            console.log(res)
+            console.log(100)
+            console.log(200)
+            //浏览器转化后的代码
+            // p.then(
+            //     value => {
+            //       console.log(value)
+            //       console.log(100)
+            //       console.log(200)
+            //     },
+            // )
+        }
+        demo()
+        console.log(1)
+    </script>
+</body>
+</html>

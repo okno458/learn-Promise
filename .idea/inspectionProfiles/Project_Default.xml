@@ -1,0 +1,27 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="ConstantConditionalExpressionJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertIndexedForToForOf" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertLetToConst" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertModuleExportToExport" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertRequireIntoImport" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertToForOf" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertVarToLetConst" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="EditorConfigCharClassLetterRedundancy" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="EditorConfigCharClassRedundancy" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="EditorConfigOptionRedundancy" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="EditorConfigPatternRedundancy" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="EditorConfigWildcardRedundancy" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="IncompatibleMaskJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSFunctionExpressionToArrowFunction" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSNonASCIINames" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSStringConcatenationToES6Template" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSUndefinedPropertyAssignment" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedAssignment" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedGlobalSymbols" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedLocalSymbols" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueDataFunction" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueDuplicateTag" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>

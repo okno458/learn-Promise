@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promise常见API</title>
+</head>
+<body>
+<script>
+    /*
+    *  1.Promise构造函数：new Promise(executor){}
+    *    executor函数是同步执行的，(resolve,reject) =>{}
+    *    resolve函数：调用resolve将Promise实例内部状态改为成功（fulfilled）
+    *    reject函数：调用reject将Promise实例内部状态改为失败（reject）
+    *    说明：executor函数毁在Promise内部立即同步调用，异步代码放在executor函数中
+    *  2.Promise.prototype.then方法：Promise实例.then(onFulfilled,onRejected)
+    *     onFulfilled:成功的回调函数(value) => {}
+    *     onRejected:失败的回调函数(reason) => {}
+    *     特别注意（难点）：then方法会返回一个新的Promise实例对象
+    * 3.Promise.prototype.catch方法：Promise实例.catch(onRejected)
+    *     onRejected:失败的回调函数(reason) => {}
+    *     说明：catch方法是then方法的语法糖，相当于then(undefined,onRejected)
+    * 4.Promise.resolve方法：Promise实例.resolve(value)
+    *     说明：用于快速返回一个状态为fulfilled或reject的Promise实例对象
+    *     备注：value的值可能是两种情况，非promise值和promise值
+    * 5.Promise.reject方法：Promise实例.reject(reason)
+    *    说明：用于快速返回一个状态必为rejected的Promise实例对象
+    * 6.Promise.all方法：Promise.all(promiseArr)
+    *    promiseArr:包含n个promise实例的数组
+    *    说明：返回一个新的promise实例，只有所有的promise实例成功才会返回成功，只要有一个失败就就会返回失败
+    * 7.Promise.race方法：Promise.race(promiseArr)
+    *    promiseArr:包含n个promise实例的数组
+    *    说明：返回一个新的promise实例，结果为成功还是失败，以最先出结果的Promise实例为基准
+    * */
+    //验证：then方法会返回一个新的Promise实例对象（）
+    // const p = new Promise((resolve, reject) => {
+    //     setTimeout(()=>{
+    //         resolve(100)
+    //     },1000)
+    // })
+    // const x = p.then(
+    //   value => {
+    //   console.log('成功了',value)
+    //   },reason => {
+    //   console.log('失败了',reason)
+    // })
+    // console.log(x === p)//此处返回值为false，说明返回了一个新的promise实例
+
+    //Promise.prototype.catch方法
+    const p = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            reject(100)
+        },1000)
+    })
+    // promise实例对象在被new出来时，形成了一个有顺序的容器，每次调用then和catch的方法就会形成一组回调
+    // 因为该promise实例返回的结果为失败，而then方法并没有指定失败的回调，所以会抛出异常（catch方法照常执行）
+    p.then(
+        //调用then方法时，如果只想指定失败的回调，需要使用undefined占位
+        value =>{
+            console.log('p成功了',value)
+        }
+    )
+    p.catch(reason => {
+        console.log('p失败了',reason)
+    })
+    console.log('***************************************')
+    const p1 = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve(100)
+        },1000)
+    })
+    p1.then(
+        //因为该promise实例（p1）返回结果为成功，而then方法未指定成功的回调，则控制台不会输出任何内容
+        undefined,
+        reason =>{
+            console.log('p1失败了',reason)
+        }
+    )
+    p1.catch(reason => {
+        console.log('p1失败了',reason)
+    })
+    //  //Promise.resolve的使用
+    // 特殊情况：若Promise.resolve的值接收一个状态为失败的promise值，则该promise状态为失败
+    // const p0 = Promise.reject(100)
+    // const p2 = Promise.resolve(p0)
+    // p2.then(res => {
+    //     console.log('res', res)
+    // },err => {
+    //     console.log('err', err)
+    // })
+    //Promise.reject的使用
+    // 特殊情况：若Promise.reject的值接收一个状态为成功的promise值，则该promise状态依旧为失败
+    // const p0 = Promise.resolve(100)
+    // const p2 = Promise.reject(p0)
+    // p2.then(res => {
+    //     console.log('res', res)
+    // },err => {
+    //     console.log('err', err)
+    // })
+    //Promise.all的使用
+    //Promise.all返回的结果成功与否，必须使promiseArr中所有的实例返回结果都为成功，否则返回失败
+    const p3 = Promise.resolve('a')
+    const p4 = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve('b')
+        },500)
+    })
+    const p5 = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve('c')
+        },2000)
+    })
+    // const x =  Promise.all([p3,p4,p5])
+    // x.then(res=>{
+    //     console.log('all成功了', res)
+    // },reason => {
+    //     console.log('all失败了', reason)
+    // })
+    //Promise.race的使用
+    //Promise.race返回的结果成功与否，以promiseArr中最先返回结果的Promise实例为基准，与promiseArr中数据的排列顺序无关
+    const x = Promise.race([p3,p4,p5])
+    x.then(res=>{
+        console.log('all成功了', res)
+    },reason => {
+        console.log('all失败了', reason)
+    })
+</script>
+</body>
+</html>

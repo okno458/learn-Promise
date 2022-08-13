@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数对象与实例对象</title>
+</head>
+<body>
+    <!--
+        函数对象与实例对象
+        实例对象：new 构造函数和类产生的对象称为实例对象
+        函数对象：将函数作为对象使用时，称为函数对象
+    -->
+<script>
+    function Person(name,age) {
+        this.name = name;
+        this.age = age;
+    }
+    Person.a = 1 //将构造函数person看成一个对象
+    console.log(Person.a = 1)
+    // Person.name = 'tom';
+    //此处输出的不是tom而是Person，函数对象中有一个不可被修改的属性name，它的值就是函数的名，是不可更改的
+    // console.log(Person.name)
+    //构造函数的this值就是new出来的当前实例（p1）
+    const p1 = new Person('liu',18);//此处p1就是Person的实例对象
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise的几个关键问题4</title>
+</head>
+<body>
+<script>
+  /*
+  *     promise如何串联多个异步任务 通过then的链式调用
+  * */
+  function sendAjax(url,data,method = 'GET') {
+      return new Promise((resolve, reject) => {
+          //创建Ajax实例
+          const xhr = new XMLHttpRequest();
+          //绑定监听
+          xhr.onreadystatechange = () => {
+              if (xhr.readyState === 4){
+                  if(xhr.status >= 200 && xhr.status <= 300) {
+                      resolve(xhr.response)
+                  }else {
+                      reject('error')
+                  }
+              }
+          };
+          //整理参数
+          let str = '';
+          for (const key in data) {
+              str += `${key}=${data[key]}&`
+          }
+          str = str.slice(0,-1)
+          xhr.open(method ,url + '?' +str);
+          // xhr.responseType = 'json'
+          xhr.send();
+      })
+  }
+  //使用promise发送多个请求，需要then方法的链式调用
+  //发送第一次请求
+  sendAjax('https://api.uixsj.cn/hitokoto/get',{type:'social'}).then(value => {
+      console.log('第一次请求成功', value)
+      //return的promise实例会影响then方法返回的新promise实例的状态以及value
+      //使用return的原因：会导致返回的promise实例值变为undefined
+      return sendAjax('https://api.uixsj.cn/hitokoto/get',{type:'social'})
+  },err => {
+      console.log('第一次请求失败', err)
+  })
+  .then(value => {
+      console.log('第二次请求成功', value)
+      return sendAjax('https://api.uixsj.cn/hitokoto/get',{type:'social'})
+  },reason => {
+      console.log('第二次请求失败', reason)
+  })
+  .then(value => {
+      console.log('第三次请求成功', value)
+  },reason => {
+      console.log('第三次请求失败', reason)
+  })
+
+</script>
+</body>
+</html>

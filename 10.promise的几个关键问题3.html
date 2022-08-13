@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise的几个关键问题3</title>
+</head>
+<body>
+<script>
+    /*
+    *   Promise实例.then返回的是一个【新的promise实例】，它的值和状态由什么来决定？
+    *     1.简单表达：由then()所指定的回调函数执行的结果决定
+    *     2.详细表达：
+    *       （1）如果then所指定的回调返回的是非promise值a：
+    *           那么【新promise实例】状态为：成功（fulfilled）,成功的value为a
+    *       （2）如果then所指定的回调返回的是一个promise实例p
+    *           那么【新promise实例】的状态和值都与P一致
+    *       （3）如果then所指定的回调抛出异常
+    *           那么【新promise实例】状态为rejected，reason为抛出的那个异常
+    * */
+    const p = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve('a')
+        },1000)
+    })
+
+    // const x = p.then(res =>{
+    //     console.log('成功了1',res)
+    //     // return Promise.resolve('a') //若p.then成功的回调函数返回了一个成功状态的promise值，则新promise实例的状态为成功，value也为a
+    //     return Promise.reject('a')//若p.then成功的回调函数返回了一个失败状态的promise值，则新promise实例的状态为失败，reason也为a
+    // },err => {
+    //     console.log('失败了1', err)
+    // })
+    // //新promise实例（x）的状态由p.then的状态来决定，成功的value为undefined,因为成功的回调函数没有返回值
+    // x.then(res =>{
+    //     console.log('成功了2',res)
+    // },err => {
+    //     console.log('失败了2', err)
+    // })
+
+    //then的链式调用
+    p.then(
+        res=>{
+            console.log('成功了1',res)
+            return Promise.reject('a')
+        },
+        err=>{
+            console.log('失败了1',err)
+        }
+    ).then(
+        res=>{
+            console.log('成功了2',res)
+            return true
+        },
+        err=>{
+            console.log('失败了2',err)
+            return 100
+        }
+    ).then(
+        res=>{
+            console.log('成功了3',res)
+            throw 900
+        },
+        err=>{
+            console.log('失败了3',err)
+            return false
+        }
+    ).then(
+        res=>{
+            console.log('成功了4',res)
+            return -100
+        },
+        err=>{
+            console.log('失败了4',err)
+        }
+    )
+</script>
+</body>
+</html>

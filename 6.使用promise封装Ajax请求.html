@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用Promise封装Ajax请求</title>
+</head>
+<body>
+<script>
+    /*
+    *   定义一个sendAjax函数，对xhr的get请求进行封装
+    *   1.该函数接收两个参数，url(请求地址)和data（参数对象）
+    *   2.该函数返回一个promise实例
+    *       若Ajax请求成功，则promise实例成功，成功的value是返回的数据
+    *       若Ajax请求失败，则promise实例失败，失败的reason是错误提示
+    * */
+    function sendAjax(url,data,method = 'GET') {
+        return new Promise((resolve, reject) => {
+            //创建Ajax实例
+            const xhr = new XMLHttpRequest();
+            //绑定监听
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4){
+                    if(xhr.status >= 200 && xhr.status <= 300) {
+                        resolve(xhr.response)
+                    }else {
+                        reject('error')
+                    }
+                }
+            };
+            //整理参数
+            let str = '';
+            for (const key in data) {
+                str += `${key}=${data[key]}&`
+            }
+            str = str.slice(0,-1)
+            xhr.open(method ,url + '?' +str);
+            // xhr.responseType = 'json'
+            xhr.send();
+        })
+    }
+    sendAjax('https://api.uixsj.cn/hitokoto/get',{type:'social'}).then(value => {
+        console.log('成功', value)
+    },err => {
+        console.log('失败', err)
+    })
+
+</script>
+</body>
+</html>

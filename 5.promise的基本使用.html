@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promise的基本使用</title>
+</head>
+<body>
+<script>
+    /*
+    *  1.重要语法
+    *       new Promise(executor)构造函数
+    *       Promise.prototype.then()方法
+    *   2.基本编码流程
+    *       （1）创建Promise实例对象（pending状态），传入executor函数
+    *       （2）在executor函数中启用异步任务（如定时器，Ajax请求等）
+    *       （3）根据异步任务的结果，做不同的处理
+    *           如果异步任务成功了，则调用resolve（value）,让promise对象实例变为fulfilled，同时指定成功的value
+    *           如果异步任务失败了，则调用reject（reason）,让promise对象实例变为rejected，同时指定成功的reason
+    *       (4)通过then方法为Promise的实例指定成功，失败的回调函数，来获取成功的value和失败的reason
+    *           注意：then方法所指定的成功和失败的回调，都是异步的回调
+    *   3.状态的注意点
+    *      1.三个状态：
+    *       (1)未确定的pending（初始化）
+    *       (2)成功的fulfilled（调用resolve的状态）
+    *       (3)失败的的fulfilled（调用reject的状态）
+    *      2.两种状态改变
+    *        pending ==> fulfilled
+    *        pending ==> reject
+    *      3.状态只能改变一次
+    *      4.一个promise指定多个成功/失败回调函数，那么它们都会调用
+    * */
+    // const p = new Promise((resolve, reject)=>{
+    //     setTimeout(()=>{
+    //        reject('fail')
+    //     },2000)
+    // })
+    // p.then(value => {
+    //     //成功的回调
+    //     console.log('成功的回调1', value)
+    // },reason => {
+    //     //失败的回调
+    //     console.log('失败的回调1', reason)
+    // })
+    // p.then(value => {
+    //     //成功的回调
+    //     console.log('成功的回调2', value)
+    // },reason => {
+    //     //失败的回调
+    //     console.log('失败的回调2', reason)
+    // })
+    // console.log('主线程')
+
+    //Promise与ajax配合使用
+    const pa = new Promise((resolve, reject) => {
+        //创建Ajax实例
+        const xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = () => {
+            //readyState === 4:数据完全接收完毕，接收的可能是服务器返回成功的数据，也可能是返回失败的数据
+            if (xhr.readyState === 4){
+                if(xhr.status === 200){
+                    resolve(xhr.response)
+                }else {
+                    reject('error')
+                }
+            }
+        }
+        xhr.open('GET','https://api.uixsj.cn/hitokoto/get?type=social')
+        // xhr.responseType = 'json'
+        xhr.send()//发送请求
+    })
+    pa.then(value => {
+        console.log('success',value)
+    },reason =>{
+        console.log('fail',reason)
+    })
+
+</script>
+</body>
+</html>

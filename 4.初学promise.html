@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promise</title>
+</head>
+<body>
+<script >
+    /*
+    *   什么是Promise
+    *      抽象表达：
+    *         1.Promise是一门ES6提出的新的技术
+    *         2.Promise是JS中异步编程的新方案（旧的是纯回调）
+    *      具体表达：
+    *         1.从语法上来说，Promise是一个内置构造函数
+    *         2.从功能上来说，Promise的实例对象可以用来封装一个异步操作，并获取其成功或失败的值
+    *
+    * */
+    //创建一个promise实例对象
+    /*
+    *  1. promise不是一个回调，是一个内置的回调函数，由程序员使用new调用
+    *  2.在调用promise时，要传入一个回调函数，是一个同步的回调，会立即在主线程上执行，它被称之为executor函数
+    *  3.每一个promise实例对象都有三种状态，分别为初始化（pending）,成功(fulfilled) ,失败(rejected)
+    *  4.每一个promise实例在被new出来的那一刻状态都为初始化（pending）
+    *  5.executor函数会接收到两个参数，它们都是函数，分别用户形参resolve和reject接收
+    *    （1）调用resolve会用promise对象实例状态变为fulfilled（成功），同时可以指定成功的value
+    *    （2）调用reject会用promise对象实例状态变为rejected（失败），同时可以指定失败的reason
+    * */
+    const p = new Promise((resolve,reject) => {
+        reject('err')
+    })
+    console.log(p)
+</script>
+</body>
+</html>

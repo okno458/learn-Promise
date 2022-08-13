@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS中的Error</title>
+</head>
+<body>
+<script>
+    /*
+        1.错误的类型
+            Error:所有错误的父类型
+            ReferenceError:引用变量不存在
+            TypeError:数据类型不正确
+            RangeError:数据值不在其所允许的范围内
+            SyntaxError:语法错误
+        2. 错误处理
+            捕获错误：try{ }catch(){} 语句
+            抛出错误：throw new Error()
+        3.错误对象
+            message属性：错误相关信息
+            stack属性：记录信息
+    */
+    //演示 ReferenceError:引用变量不存在
+    // console.log(a)
+    //演示 TypeError:数据类型不正确
+    // const demo = () => {}
+    // demo()()
+    //演示RangeError:数据值不在其所允许的范围内 可理解为死循环
+    // const demo = () => {demo()}
+    // demo()
+    // 演示SyntaxError:语法错误
+    // console.log(1
+
+    //如何捕获一个错误
+    /*
+    *   使用try catch语句
+    *   try中放可能出现错误的代码 一旦出现错误立刻停止try中代码的执行，调用catch，并携带错误信息
+    * */
+        try {
+            console.log(1)
+            console.log(a)
+            console.log(2)
+        } catch(err){
+            console.log(err)
+        }
+    //如何抛出一个错误
+        function demo(){
+            const date = Date.now();
+            if(date % 2 !== 0){
+                console.log('偶数，可以执行')
+            }else {
+                throw new Error('123')
+            }
+        }
+        try {
+            demo()
+        }catch (e) {
+            // debugger;
+            console.log(e)
+        }
+</script>
+</body>
+</html>

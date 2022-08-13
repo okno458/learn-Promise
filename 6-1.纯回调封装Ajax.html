@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>纯回调封装Ajax</title>
+</head>
+<body>
+<script>
+    /*
+*   定义一个sendAjax函数，对xhr的get请求进行封装
+*   该函数接收两个参数，url(请求地址)和data（参数对象）,success(成功的回调)，error(失败的回调)
+* */
+    function sendAjax(url,data,success,error) {
+            //创建Ajax实例
+            const xhr = new XMLHttpRequest();
+            //绑定监听
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4){
+                    if(xhr.status >= 200 && xhr.status <= 300) {
+                       success(xhr.response)
+                    }else {
+                       error()
+                    }
+                }
+            };
+            //整理参数
+            let str = '';
+            for (const key in data) {
+                str += `${key}=${data[key]}&`
+            }
+            str = str.slice(0,-1)
+            xhr.open('GET',url + '?' +str);
+            // xhr.responseType = 'json'
+            xhr.send();
+    }
+    sendAjax(
+        'https://api.uixsj.cn/hitokoto/get',
+        {type:'social'},
+        res => {
+            console.log('成功了',res)
+        },
+        err => {
+            console.log('失败了',err)
+        },
+    )
+</script>
+</body>
+</html>
